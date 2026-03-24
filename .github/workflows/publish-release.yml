@@ -1,0 +1,104 @@
+name: Publish Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            runtime: linux-x64
+            artifact: reminder-linux-x64
+            extension: ''
+          - os: macos-latest
+            runtime: osx-x64
+            artifact: reminder-macos-x64
+            extension: ''
+          - os: macos-latest
+            runtime: osx-arm64
+            artifact: reminder-macos-arm64
+            extension: ''
+          - os: windows-latest
+            runtime: win-x64
+            artifact: reminder-windows-x64
+            extension: '.exe'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore src/Reminder/Reminder.csproj
+
+      - name: Publish
+        shell: bash
+        run: |
+          dotnet publish src/Reminder/Reminder.csproj \
+            --configuration Release \
+            --runtime ${{ matrix.runtime }} \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:IncludeNativeLibrariesForSelfExtract=true \
+            -p:EnableCompressionInSingleFile=true \
+            -o ./publish/${{ matrix.artifact }}
+
+      - name: Create archive (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          cd ./publish/${{ matrix.artifact }}
+          tar -czf ../${{ matrix.artifact }}.tar.gz *
+          cd ../..
+
+      - name: Create archive (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cd ./publish/${{ matrix.artifact }}
+          Compress-Archive -Path * -DestinationPath ../${{ matrix.artifact }}.zip
+          cd ../..
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ./publish/${{ matrix.artifact }}.tar.gz
+            ./publish/${{ matrix.artifact }}.zip
+          retention-days: 5
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: ./artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.version }}
+          name: Release ${{ inputs.version }}
+          draft: false
+          prerelease: false
+          files: |
+            ./artifacts/**/*.tar.gz
+            ./artifacts/**/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
