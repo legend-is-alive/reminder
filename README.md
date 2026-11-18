@@ -1,6 +1,6 @@
 # Reminder
 
-A lightweight desktop reminder application built with [Avalonia UI](https://avaloniaui.net/) and .NET 10. It lives in your system tray, keeps track of your tasks, and pops up notifications with sound when reminders are due.
+A lightweight desktop reminder application built with [Avalonia UI](https://avaloniaui.net/) and .NET 11. It lives in your system tray, keeps track of your tasks, and pops up notifications with sound when reminders are due.
 
 ## Features
 
