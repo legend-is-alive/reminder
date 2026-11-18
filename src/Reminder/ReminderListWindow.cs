@@ -55,7 +55,7 @@ public sealed class ReminderListWindow : Window
 
         _searchBox = new TextBox
         {
-            Watermark = "🔍 Search reminders...",
+            PlaceholderText = "🔍 Search reminders...",
             Margin = new Thickness(0, 8, 0, 0)
         };
         DockPanel.SetDock(_searchBox, Dock.Top);

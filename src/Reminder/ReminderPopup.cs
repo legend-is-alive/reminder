@@ -27,7 +27,7 @@ public sealed class ReminderPopup : Window
         Topmost = true;
         CanResize = false;
         Title = "Reminder";
-        SystemDecorations = SystemDecorations.BorderOnly;
+        WindowDecorations = WindowDecorations.BorderOnly;
         WindowStartupLocation = WindowStartupLocation.Manual;
         Background = new SolidColorBrush(Color.Parse("#FFFFFF"));
         UIHelper.SetIcon(this);
