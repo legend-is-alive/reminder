@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
@@ -7,6 +8,7 @@ namespace Reminder;
 public partial class App : Application
 {
     private static ReminderService? _service;
+    private HiddenWindow? _trayHost;
 
     public static ReminderService Service => _service ??= new ReminderService();
 
@@ -16,7 +18,9 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new HiddenWindow();
+            // Tray-only app: the host window is never shown, so the app must not exit when no window is open.
+            desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            _trayHost = new HiddenWindow();
             desktop.ShutdownRequested += OnShutdownRequested;
         }
 

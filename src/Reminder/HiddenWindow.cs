@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using H.NotifyIcon;
 
 namespace Reminder;
@@ -30,6 +31,9 @@ public sealed class HiddenWindow : Window
                 }
             }
         };
+
+        // Avalonia 12 only shows tray icons that are registered with the application.
+        TrayIcon.SetIcons(Application.Current!, new TrayIcons { _tray });
 
         App.Service.OnReminderTriggered += ShowReminderPopup;
         App.Service.OnRemindersChanged += UpdateTooltip;

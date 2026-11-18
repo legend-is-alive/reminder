@@ -55,7 +55,7 @@ public sealed class ReminderFormWindow : Window
         _subject = new TextBox
         {
             Text = existingReminder?.Subject ?? string.Empty,
-            Watermark = "What do you need to remember?",
+            PlaceholderText = "What do you need to remember?",
             MaxLength = 200
         };
         panel.Children.Add(_subject);
@@ -64,7 +64,7 @@ public sealed class ReminderFormWindow : Window
         _description = new TextBox
         {
             Text = existingReminder?.Description ?? string.Empty,
-            Watermark = "Add details (optional)",
+            PlaceholderText = "Add details (optional)",
             AcceptsReturn = true,
             Height = 80,
             TextWrapping = TextWrapping.Wrap
@@ -111,7 +111,7 @@ public sealed class ReminderFormWindow : Window
         panel.Children.Add(CreateFieldLabel("🏷️ Category"));
         _categoryBox = new AutoCompleteBox
         {
-            Watermark = "e.g. Work, Personal, Health...",
+            PlaceholderText = "e.g. Work, Personal, Health...",
             Text = existingReminder?.Category ?? string.Empty,
             ItemsSource = App.Service.GetCategories(),
             FilterMode = AutoCompleteFilterMode.Contains

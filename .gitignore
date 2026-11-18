@@ -53,3 +53,5 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 *.vs
+# Local user data
+src/Reminder/reminders.json

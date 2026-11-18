@@ -139,7 +139,7 @@ public sealed class ReminderService : IAsyncDisposable
 
         lock (_lock)
         {
-            var index = _reminders.IndexOf(reminder);
+            var index = _reminders.FindIndex(r => r.Id == reminder.Id);
             if (index < 0)
             {
                 throw new InvalidOperationException("Reminder not found");
@@ -167,7 +167,7 @@ public sealed class ReminderService : IAsyncDisposable
 
         lock (_lock)
         {
-            _reminders.Remove(reminder);
+            _reminders.RemoveAll(r => r.Id == reminder.Id);
         }
 
         await SaveRemindersAsync(cancellationToken);
@@ -348,7 +348,7 @@ public sealed class ReminderService : IAsyncDisposable
     {
         lock (_lock)
         {
-            var index = _reminders.IndexOf(existingReminder);
+            var index = _reminders.FindIndex(r => r.Id == existingReminder.Id);
             if (index < 0)
             {
                 throw new InvalidOperationException("Reminder not found");

@@ -2,5 +2,5 @@ namespace Reminder;
 
 internal static class AppConstants
 {
-    internal const string IconPath = "Icons/rmd.ico";
+    internal static readonly string IconPath = Path.Combine(AppContext.BaseDirectory, "Icons", "rmd.ico");
 }
